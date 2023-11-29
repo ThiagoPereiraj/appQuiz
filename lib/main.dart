@@ -7,6 +7,7 @@ class QuizApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.orange,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -24,6 +25,18 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  List<Icon> marcadorDePontos = [
+    Icon(Icons.check, color: Colors.green),
+    Icon(
+      Icons.close,
+      color: Colors.red,
+    ),
+    Icon(Icons.check, color: Colors.green),
+    Icon(
+      Icons.close,
+      color: Colors.red,
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -50,10 +63,8 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(15.0),
             child: TextButton(
               style: TextButton.styleFrom(
-                 
-              backgroundColor: Colors.deepPurple,
+                backgroundColor: Color.fromARGB(255, 47, 130, 207),
               ),
-             
               child: const Text(
                 'Verdadeiro',
                 style: TextStyle(
@@ -62,7 +73,9 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                //O usuário clica no botão verdadeiro.
+                setState(() {
+                  marcadorDePontos.add(Icon(Icons.check, color: Colors.green));
+                });
               },
             ),
           ),
@@ -72,8 +85,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(15.0),
             child: TextButton(
               style: TextButton.styleFrom(
-                 
-              backgroundColor: Colors.grey.shade800,
+                backgroundColor: Color.fromARGB(255, 47, 130, 207),
               ),
               child: const Text(
                 'Falso',
@@ -88,12 +100,9 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ),
         ),
-         Row(
-          children: [
-            Icon(Icons.check),
-          ],
-         )
-         
+        Row(
+          children: marcadorDePontos,
+        ),
       ],
     );
   }

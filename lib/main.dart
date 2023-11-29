@@ -1,6 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'helper.dart';
 
-void main() => runApp(QuizApp());
+Helper helper = Helper();
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HomeApp(),
+    );
+  }
+}
+
+class HomeApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Home"),
+      ),
+      body: Center(
+        child: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => QuizApp()),
+            );
+          },
+          child: Text('iniciar !'),
+        ),
+      ),
+    );
+  }
+}
 
 class QuizApp extends StatelessWidget {
   @override
@@ -25,31 +59,61 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Icon> marcadorDePontos = [
-    Icon(Icons.check, color: Colors.green),
-    Icon(
-      Icons.close,
-      color: Colors.red,
-    ),
-    Icon(Icons.check, color: Colors.green),
-    Icon(
-      Icons.close,
-      color: Colors.red,
-    ),
+  List<Icon> marcadorDeTentativas = [
+    Icon(Icons.favorite, color: Colors.red),
+    Icon(Icons.favorite, color: Colors.red),
+    Icon(Icons.favorite, color: Colors.red),
+    Icon(Icons.favorite, color: Colors.red),
+    Icon(Icons.favorite, color: Colors.red)
   ];
+
+  void resetarTentativas() {
+    marcadorDeTentativas.clear();
+    for (int i = 0; i < 5; i++) {
+      marcadorDeTentativas.add(Icon(Icons.favorite, color: Colors.red));
+    }
+  }
+
+  void conferirResposta(bool respostaSelecionada) {
+    bool respostaCerta = helper.obterResposta();
+    setState(() {
+      if (helper.conferirFimDaExecucao()) {
+         Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TelaVitoria()),
+        );
+        helper.reiniciarApp();
+        resetarTentativas();
+      }
+      if (respostaSelecionada == respostaCerta) {
+        helper.proxPergunta();
+      } else {
+        marcadorDeTentativas.removeAt(0);
+      }
+      if (helper.conferirTentativas(marcadorDeTentativas)) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TelaDerrota()),
+        );
+        helper.reiniciarApp();
+        resetarTentativas();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        const Expanded(
+        Expanded(
           flex: 5,
           child: Padding(
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'As perguntas serão exibidas aqui.',
+                helper.obterQuestao(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -73,9 +137,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  marcadorDePontos.add(Icon(Icons.check, color: Colors.green));
-                });
+                conferirResposta(true);
               },
             ),
           ),
@@ -95,15 +157,108 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                //O usuário clica no botão falso.
+                conferirResposta(false);
               },
             ),
           ),
         ),
         Row(
-          children: marcadorDePontos,
+          children: marcadorDeTentativas,
         ),
       ],
+    );
+  }
+}
+
+class TelaDerrota extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+         Expanded(
+          flex: 5,
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Center(
+              child: Text(
+                'Você Perdeu!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 25.0,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 47, 130, 207),
+              ),
+              child: const Text(
+                'Tentar novamente',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
+              ),
+              onPressed: () {
+                 Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 47, 130, 207),
+              ),
+              child: const Text(
+                'Voltar a Página inicial',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeApp()),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class TelaVitoria extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Vitória"),
+      ),
+      body: Center(
+        child: TextButton(
+          onPressed: () {
+            
+             Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeApp()),
+                );
+          },
+          child: Text('Retornar !'),
+        ),
+      ),
     );
   }
 }

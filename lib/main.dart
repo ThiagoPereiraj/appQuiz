@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'helper.dart';
 
 Helper helper = Helper();
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HomeApp(),
     );
   }
 }
 
 class HomeApp extends StatelessWidget {
+  const HomeApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-      ),
       body: Center(
         child: TextButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => QuizApp()),
+              MaterialPageRoute(builder: (context) => const QuizApp()),
             );
           },
-          child: Text('iniciar !'),
+          child: const Text('iniciar !'),
         ),
       ),
     );
@@ -37,14 +38,17 @@ class HomeApp extends StatelessWidget {
 }
 
 class QuizApp extends StatelessWidget {
+  const QuizApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.orange,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
             child: QuizPage(),
           ),
         ),
@@ -54,31 +58,34 @@ class QuizApp extends StatelessWidget {
 }
 
 class QuizPage extends StatefulWidget {
+  const QuizPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _QuizPageState createState() => _QuizPageState();
 }
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> marcadorDeTentativas = [
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red)
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red)
   ];
 
   void resetarTentativas() {
     marcadorDeTentativas.clear();
     for (int i = 0; i < 5; i++) {
-      marcadorDeTentativas.add(Icon(Icons.favorite, color: Colors.red));
+      marcadorDeTentativas.add(const Icon(Icons.favorite, color: Colors.red));
     }
   }
 
-  void conferirResposta(bool respostaSelecionada) {
-    bool respostaCerta = helper.obterResposta();
+  void conferirResposta(String respostaSelecionada) {
+    String respostaCerta = helper.obterResposta();
     setState(() {
       if (helper.conferirFimDaExecucao()) {
-         Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => TelaVitoria()),
         );
@@ -93,7 +100,7 @@ class _QuizPageState extends State<QuizPage> {
       if (helper.conferirTentativas(marcadorDeTentativas)) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TelaDerrota()),
+          MaterialPageRoute(builder: (context) => const TelaDerrota()),
         );
         helper.reiniciarApp();
         resetarTentativas();
@@ -107,15 +114,18 @@ class _QuizPageState extends State<QuizPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        Row(
+          children: marcadorDeTentativas,
+        ),
         Expanded(
-          flex: 5,
+          flex: 1,
           child: Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
                 helper.obterQuestao(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 25.0,
                 ),
               ),
@@ -123,61 +133,121 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 47, 130, 207),
-              ),
-              child: const Text(
-                'Verdadeiro',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(1),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(400, 20),
+                    backgroundColor: const Color.fromARGB(255, 47, 130, 207),
+                  ),
+                  child: Text(
+                    helper.obterAlternativa(0),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  onPressed: () {
+                    conferirResposta(helper.obterAlternativa(0));
+                  },
                 ),
               ),
-              onPressed: () {
-                conferirResposta(true);
-              },
-            ),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 47, 130, 207),
-              ),
-              child: const Text(
-                'Falso',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(400, 20),
+                    backgroundColor: const Color.fromARGB(255, 47, 130, 207),
+                  ),
+                  child: Text(
+                    helper.obterAlternativa(1),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  onPressed: () {
+                    conferirResposta(helper.obterAlternativa(1));
+                  },
                 ),
               ),
-              onPressed: () {
-                conferirResposta(false);
-              },
-            ),
+              Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(400, 20),
+                    backgroundColor: const Color.fromARGB(255, 47, 130, 207),
+                  ),
+                  child: Text(
+                    helper.obterAlternativa(2),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  onPressed: () {
+                    conferirResposta(helper.obterAlternativa(2));
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(400, 20),
+                    backgroundColor: const Color.fromARGB(255, 47, 130, 207),
+                  ),
+                  child: Text(
+                    helper.obterAlternativa(3),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  onPressed: () {
+                    conferirResposta(helper.obterAlternativa(3));
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(400, 20),
+                    backgroundColor: const Color.fromARGB(255, 47, 130, 207),
+                  ),
+                  child: Text(
+                    helper.obterAlternativa(4),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  onPressed: () {
+                    conferirResposta(helper.obterAlternativa(4));
+                  },
+                ),
+              ),
+            ],
           ),
-        ),
-        Row(
-          children: marcadorDeTentativas,
-        ),
+        )
       ],
     );
   }
 }
 
 class TelaDerrota extends StatelessWidget {
+  const TelaDerrota({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-         Expanded(
+        const Expanded(
           flex: 5,
           child: Padding(
             padding: EdgeInsets.all(10.0),
@@ -197,7 +267,7 @@ class TelaDerrota extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 47, 130, 207),
+                backgroundColor: const Color.fromARGB(255, 47, 130, 207),
               ),
               child: const Text(
                 'Tentar novamente',
@@ -207,7 +277,7 @@ class TelaDerrota extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                 Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
           ),
@@ -217,7 +287,7 @@ class TelaDerrota extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 47, 130, 207),
+                backgroundColor: const Color.fromARGB(255, 47, 130, 207),
               ),
               child: const Text(
                 'Voltar a Página inicial',
@@ -229,7 +299,7 @@ class TelaDerrota extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeApp()),
+                  MaterialPageRoute(builder: (context) => const HomeApp()),
                 );
               },
             ),
@@ -241,30 +311,25 @@ class TelaDerrota extends StatelessWidget {
 }
 
 class TelaVitoria extends StatelessWidget {
+  const TelaVitoria({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Vitória"),
+        title: const Text("Vitória"),
       ),
       body: Center(
         child: TextButton(
           onPressed: () {
-            
-             Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeApp()),
-                );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeApp()),
+            );
           },
-          child: Text('Retornar !'),
+          child: const Text('Retornar !'),
         ),
       ),
     );
   }
 }
-
-/*
-pergunta1: 'O metrô é um dos meios de transporte mais seguros do mundo', verdadeiro,
-pergunta2: 'A culinária brasileira é uma das melhores do mundo.', verdadeiro,
-pergunta3: 'Vacas podem voar, assim como peixes utilizam os pés para andar.', falso,
-*/

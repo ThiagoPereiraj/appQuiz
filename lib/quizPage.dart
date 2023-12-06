@@ -86,6 +86,7 @@ class _QuizPageState extends State<QuizPage> {
                   color: Color(0xFFF2EA77),
                   fontSize: 25.0,
                   fontWeight: FontWeight.bold,
+                  fontFamily: "Schyler"
                 ),
               ),
             ),

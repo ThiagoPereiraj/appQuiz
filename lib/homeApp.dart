@@ -21,6 +21,7 @@ class HomeApp extends StatelessWidget {
                     color: Color(0xFFF2EA77),
                     fontSize: 40.0,
                     fontWeight: FontWeight.bold,
+                    fontFamily: "Schyler"
                   ),
                 ),
               ),
